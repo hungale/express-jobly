@@ -36,7 +36,6 @@ class Company {
     }
     const companies = await db.query(
        baseQuery, values // or use Object.values(queryObj) if ECMA2020
-      // baseQuery, Object.values(queryObj)
     );
 
     return companies.rows;
