@@ -1,4 +1,6 @@
 const db = require("../db");
+const ExpressError = require('../expressError');
+const partialUpdate = require('../helpers/partialUpdate');
 
 
 /** Company on the site.  */
@@ -22,8 +24,8 @@ class Company {
     }
 
     let baseQuery = `SELECT handle, name FROM companies`
-    if(queryArr) {
-      baseQuery += " WHERE " + arr.join(" AND ");
+    if(queryArr.length > 0) {
+      baseQuery += " WHERE " + queryArr.join(" AND ");
     }
     const companies = await db.query(
        baseQuery, Object.values(queryObj)
@@ -53,6 +55,32 @@ class Company {
     );
 
     return response.rows[0];
+  }
+
+/** Getting a single company by its handle */
+  static async getBy(handle) {
+    const result = await db.query(`
+    SELECT handle, name, num_employees, description, logo_url
+    FROM companies
+    WHERE handle = $1
+    `, [handle]);
+    if (!result.rows.length) throw new ExpressError(`Company ${handle} doesn't exist`, 404);
+    return result.rows[0];
+  }
+/** Updating a single company by its handle */
+  static async update(handle, updateValues) {
+    const { query, values } = partialUpdate('companies', updateValues, 'handle', handle);
+    const companyUpdate = await db.query(query, values);
+    return companyUpdate.rows[0];
+  }
+/** Delete a single company by its handle */
+  
+  static async delete(handle) {
+    const company = await db.query(`
+    DELETE FROM companies
+    WHERE handle = $1
+    RETURNING handle`, [handle]);
+    return company.rows[0];
   }
 }
 

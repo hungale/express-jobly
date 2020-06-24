@@ -1,7 +1,6 @@
 {
   "name": "express-jobly",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -20,5 +19,14 @@
   },
   "devDependencies": {
     "supertest": "^4.0.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hungale/express-jobly.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hungale/express-jobly/issues"
+  },
+  "homepage": "https://github.com/hungale/express-jobly#readme",
+  "description": ""
 }
