@@ -1,5 +1,3 @@
-const Job = require('../../models/job');
-const Company = require('../../models/company');
 process.env.NODE_ENV = 'test';
 const request = require('supertest');
 const app = require('../../app');
@@ -8,7 +6,7 @@ const db = require('../../db');
 let id;
 beforeEach(async () => {
 
-  let response = await request(app).post('/companies').send({
+ await request(app).post('/companies').send({
     "handle": "apple",
     "name": "apple",
     "num_employees": 12,
@@ -39,7 +37,7 @@ afterEach(async () => {
   await db.query(`DELETE FROM companies;`);
 });
 
-describe('TESTING GET/POST/PATCH/DELETE', () => {
+describe('TESTING GET/POST/PATCH/DELETE FOR JOBS', () => {
   test('POST', async () => {
     let response = await request(app).post('/jobs').send({
       "title": "tech",

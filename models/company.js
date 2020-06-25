@@ -73,8 +73,7 @@ class Company {
     const { name, description, logo_url } = company.rows[0];
     let jobs = company.rows
       .map(({ title, salary, equity }) => ({ title, salary, equity }))
-      .filter(({ title, salary, equity }) => title && salary && equity
-    );
+      .filter(({ title, salary, equity }) => title && salary && equity);
   
     return { handle, name, description, logo_url, jobs };
   }

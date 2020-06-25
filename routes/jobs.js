@@ -1,11 +1,10 @@
 const express = require("express");
-const Company = require("../models/company");
 const Job = require("../models/job");
 const ExpressError = require('../expressError');
 const router = new express.Router();
 const jsonSchema = require('jsonschema');
-const jobSchemaPost = require("../schemas/jobSchemaPost.json");
-const companySchemaUpdate = require("../schemas/jobSchemaPatch.json");
+const jobSchemaPost = require("../schemas/jobSchemaPost.json")
+const jobSchemaPatch = require("../schemas/jobSchemaPatch.json");
 
 /** POST / - add Job to db
 *
@@ -13,13 +12,13 @@ const companySchemaUpdate = require("../schemas/jobSchemaPatch.json");
 * */
 
 router.post("/", async (req, res, next) => {
+  const result = jsonSchema.validate(req.body, jobSchemaPost);
+  
   try {
-    const result = jsonSchema.validate(req.body, jobSchemaPost);
     if (!result.valid) {
       let listOfErrors = result.errors.map(error => error.stack);
       throw new ExpressError(listOfErrors, 400);
     };
-
     const job = await Job.create(req.body);
     return res.status(201).json({ job });
   } catch (err) {
@@ -72,7 +71,7 @@ router.patch('/:id', async (req, res, next) => {
     const { id } = req.params;
     const job = await Job.update(id, req.body);
 
-    const result = jsonSchema.validate(req.body, jobSchemaPost);
+    const result = jsonSchema.validate(req.body, jobSchemaPatch);
     if (!result.valid) {
       let listOfErrors = result.errors.map(error => error.stack);
       throw new ExpressError(listOfErrors, 400);
