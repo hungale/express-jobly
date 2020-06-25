@@ -34,8 +34,13 @@ beforeEach(async () => {
 
 });
 
+afterEach(async () => {
+  await db.query(`DELETE FROM jobs;`);
+  await db.query(`DELETE FROM companies;`);
+});
+
 describe('TESTING GET/POST/PATCH/DELETE', () => {
-  test('if post is adding records to db', async () => {
+  test('POST', async () => {
     let response = await request(app).post('/jobs').send({
       "title": "tech",
       "salary": 68999.32,
@@ -80,7 +85,7 @@ describe('TESTING GET/POST/PATCH/DELETE', () => {
     expect(response2.statusCode).toEqual(400);
   });
 
-  test('get all with query strings', async () => {
+  test('GET WITH QUERY STRINGS', async () => {
     let response = await request(app).get('/jobs?min_salary=50000');
     expect(response.body.jobs.length).toEqual(1);
 
@@ -91,7 +96,6 @@ describe('TESTING GET/POST/PATCH/DELETE', () => {
     expect(response.body.jobs.length).toEqual(0);
 
     response = await request(app).get('/jobs?search=apple');
-    console.log(response.body);
     expect(response.body.jobs.length).toEqual(2);
 
     response = await request(app).get('/jobs?search=mapple');
@@ -115,17 +119,6 @@ describe('TESTING GET/POST/PATCH/DELETE', () => {
 
 });
 
-
-
-
-
-
-
-
-afterEach(async () => {
-  await db.query(`DELETE FROM jobs;`);
-  await db.query(`DELETE FROM companies;`);
-});
 afterAll(async () => {
   await db.end();
 });

@@ -112,8 +112,9 @@ describe('POST', () => {
     response = await request(app).get("/companies/mapple");
     console.log(response.body)
     expect(response.statusCode).toBe(200);
-    expect(response.body.company).toHaveProperty("handle");
+    expect(response.body).toHaveProperty("handle");
   });
+
   test('POST new company sad path', async () => {
     let response = await request(app).post('/companies').send({
       "num_employees": 123,
