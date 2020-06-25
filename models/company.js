@@ -60,16 +60,22 @@ class Company {
 /** Getting a single company by its handle */
   static async getBy(handle) {
     const company = await db.query(
-      `SELECT handle, name, num_employees, description, logo_url
+      `SELECT handle, name, num_employees, description, logo_url, jobs.title, jobs.salary, jobs.equity
         FROM companies
+        JOIN jobs
+        ON handle = jobs.company_handle
         WHERE handle = $1`, [handle]
     );
     
     if (!company.rows.length) {
       throw new ExpressError(`Company ${handle} doesn't exist`, 404);
     }
+
+    const {name, description, logo_url } = company.rows[0];
+
+    const jobs = company.rows.map(({ title, salary, equity }) => ({ title, salary, equity }));
     
-    return company.rows[0];
+    return {handle, name, description, logo_url, jobs};
   }
 /** Updating a single company by its handle */
   static async update(handle, updateValues) {

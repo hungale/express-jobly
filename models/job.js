@@ -15,10 +15,11 @@ class Job {
     const job = await db.query(
       `INSERT INTO jobs (title, salary, equity, company_handle, date_posted)
         VALUES ($1, $2, $3, $4, current_timestamp)
-        RETURNING title, salary, equity, company_handle, date_posted`,
+        RETURNING id, title, salary, equity, company_handle, date_posted`,
       [title, salary, equity, company_handle]
     );
     
+    if (!job.rows.length) throw new ExpressError('Company does not exist in our records', 404);
     return job.rows[0];
   };
 
@@ -30,12 +31,12 @@ class Job {
   static async all(queryObj) {
     const queryArr = [];
     const values = [];
-    let dbQuery = `SELECT jobs.title, jobs.company_handle FROM jobs `;
+    let dbQuery = `SELECT title, company_handle, date_posted FROM jobs `;
 
     for (let key in queryObj) {
       if (key === 'search') {
-        queryArr.push(`search=$${queryArr.length + 1}`);
-        values.push(+queryObj[key]);
+        queryArr.push(`company_handle=$${queryArr.length + 1}`);
+        values.push(queryObj[key]);
       };
       if (key === 'min_salary') {
         queryArr.push(`salary>=$${queryArr.length + 1}`);
@@ -51,6 +52,7 @@ class Job {
       dbQuery += 'WHERE ' + queryArr.join(' AND ');
     };
    
+    dbQuery += ' ORDER BY date_posted DESC'
     const jobs = await db.query(dbQuery, values);
     return jobs.rows;
   };
