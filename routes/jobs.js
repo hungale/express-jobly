@@ -18,7 +18,7 @@ router.post("/", async (req, res, next) => {
     if (!result.valid) {
       let listOfErrors = result.errors.map(error => error.stack);
       throw new ExpressError(listOfErrors, 400);
-    }
+    };
 
     const job = await Job.create(req.body);
     return res.status(201).json({ job });
@@ -26,8 +26,8 @@ router.post("/", async (req, res, next) => {
     if (typeof err.message === 'string'){
       if (err.message.match(/foreign/g)) {
         return next(new ExpressError('Company does not exist in our records', 404));
-  }
-}
+      };
+    };
     return next(err);
   };
 });

@@ -41,7 +41,7 @@ describe('TESTING GET/POST/PATCH/DELETE', () => {
       "salary": 68999.32,
       "equity": 0.55,
       "company_handle": "apple"
-    })
+    });
     
     expect(response.body.job).toHaveProperty('title');
     expect(response.body.job.title).toEqual('tech');
@@ -97,21 +97,21 @@ describe('TESTING GET/POST/PATCH/DELETE', () => {
     response = await request(app).get('/jobs?search=mapple');
     expect(response.body.jobs.length).toEqual(0);
     
-  })
+  });
 
   test('DELETE', async () => {
     let response = await request(app).delete(`/jobs/${id}`);
    
     expect(response.statusCode).toEqual(200);
     expect(response.body).toEqual({ message: `Job was deleted` });
-  })
+  });
 
   test('PATCH', async () => {
-    let response = await request(app).patch(`/jobs/${id}`).send({"title": "data science"});
+    let response = await request(app).patch(`/jobs/${id}`).send({ "title": "data science" });
 
     expect(response.statusCode).toEqual(200);
     expect(response.body.job.title).toEqual('data science');
-  })
+  });
 
 });
 
@@ -124,7 +124,7 @@ describe('TESTING GET/POST/PATCH/DELETE', () => {
 
 afterEach(async () => {
   await db.query(`DELETE FROM jobs;`);
-  await db.query(`DELETE FROM companies;`)
+  await db.query(`DELETE FROM companies;`);
 });
 afterAll(async () => {
   await db.end();

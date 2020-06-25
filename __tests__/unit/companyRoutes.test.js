@@ -107,9 +107,10 @@ describe('POST', () => {
     response = await request(app).get("/companies");
     expect(response.statusCode).toBe(200);
     expect(response.body.companies.length).toBe(2);
-
+    
     // test GET /:handle on the company just made
     response = await request(app).get("/companies/mapple");
+    console.log(response.body)
     expect(response.statusCode).toBe(200);
     expect(response.body.company).toHaveProperty("handle");
   });

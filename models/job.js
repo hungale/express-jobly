@@ -52,7 +52,7 @@ class Job {
       dbQuery += 'WHERE ' + queryArr.join(' AND ');
     };
    
-    dbQuery += ' ORDER BY date_posted DESC'
+    dbQuery += ' ORDER BY date_posted DESC';
     const jobs = await db.query(dbQuery, values);
     return jobs.rows;
   };
@@ -66,6 +66,7 @@ class Job {
     const job = await db.query(`SELECT id, title, salary, equity, company_handle, date_posted
                                 FROM jobs
                                 WHERE id=$1`, [id]);
+                                
     return job.rows[0];
   };
 
