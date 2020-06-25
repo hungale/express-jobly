@@ -110,9 +110,9 @@ describe('POST', () => {
     
     // test GET /:handle on the company just made
     response = await request(app).get("/companies/mapple");
-    console.log(response.body)
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty("handle");
+    expect(response.body.jobs.length).toBe(0);
   });
 
   test('POST new company sad path', async () => {

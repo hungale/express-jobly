@@ -34,7 +34,6 @@ router.post("/", async (req, res, next) => {
       let listOfErrors = result.errors.map(error => error.stack);
       throw new ExpressError(listOfErrors, 400);
     }
-
     const company = await Company.create(req.body);
     return res.status(201).json({company});
   } catch(err) {
