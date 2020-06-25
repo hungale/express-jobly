@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The root schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "default": {},
+  "examples": [
+      {
+          "username": "abcman",
+          "first_name": "abc",
+          "last_name": "man",
+          "email": "nope",
+          "photo_url": "nope",
+          "password": "password"
+      }
+  ],
+  "required": [
+      "username",
+      "password",
+      "first_name",
+      "last_name",
+      "email"
+  ],
+  "additionalProperties": true,
+  "properties": {
+      "username": {
+          "$id": "#/properties/username",
+          "type": "string",
+          "title": "The username schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+              "abcman"
+          ]
+      },
+      "first_name": {
+          "$id": "#/properties/first_name",
+          "type": "string",
+          "title": "The first_name schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+              "abc"
+          ]
+      },
+      "last_name": {
+          "$id": "#/properties/last_name",
+          "type": "string",
+          "title": "The last_name schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+              "man"
+          ]
+      },
+      "email": {
+          "$id": "#/properties/email",
+          "type": "string",
+          "title": "The email schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+              "nope"
+          ]
+      },
+      "photo_url": {
+          "$id": "#/properties/photo_url",
+          "type": "string",
+          "title": "The photo_url schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+              "nope"
+          ]
+      },
+      "password": {
+          "$id": "#/properties/password",
+          "type": "string",
+          "title": "The password schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "minLength": 6,
+          "maxLength": 24,
+          "examples": [
+              "password"
+          ]
+      }
+  }
+}

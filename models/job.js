@@ -97,6 +97,10 @@ class Job {
     WHERE id=$1
     RETURNING title`, [id]);
   
+    if (!job.rows.length) {
+      throw new ExpressError("Cannot delete a job that does not exist.", 404);
+    }
+    
     return job.rows[0];
   };
 };
