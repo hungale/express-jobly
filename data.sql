@@ -1,7 +1,3 @@
--- DROP DATABASE jobly;
--- CREATE DATABASE jobly;
--- \c jobly
-
 CREATE TABLE companies (
   handle TEXT PRIMARY KEY,
   name TEXT UNIQUE NOT NULL,

@@ -159,7 +159,7 @@ describe('DELETE', () => {
     expect(response.body.companies.length).toBe(0);
   });
 
-  test('PATCH sad path', async () => {
+  test('DELETE sad path', async () => {
     let response = await request(app).delete(`/companies/${handle}`);
     
     expect(response.statusCode).toBe(200);
