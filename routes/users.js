@@ -2,6 +2,7 @@ const express = require("express");
 const User = require("../models/user");
 const ExpressError = require('../expressError');
 const router = new express.Router();
+const { checkIfLoggedIn } = require('../middleware/auth');
 const jsonSchema = require('jsonschema');
 const userSchemaPost = require("../schemas/userSchemaPost.json")
 const userSchemaPatch = require("../schemas/userSchemaPatch.json");
@@ -20,8 +21,9 @@ router.post("/", async (req, res, next) => {
     }
 
     const user = await User.create(req.body);
+    const { _token: token } = user;
 
-    return res.status(201).json({user});
+    return res.status(201).json({ token });
   } catch(err) {
     if(typeof err.constraint === "string") {
       if(err.constraint.match(/((users_pkey)|(users_email_key))/g)) {
@@ -37,7 +39,7 @@ router.post("/", async (req, res, next) => {
 *
 * => {users: [{username, first_name, last_name, email}, ...]}
 * */
-router.get("/", async (req, res, next) => {
+router.get("/", checkIfLoggedIn, async (req, res, next) => {
   try {
     const users = await User.all();
 
@@ -52,7 +54,7 @@ router.get("/", async (req, res, next) => {
 *
 * => {user: {username, first_name, last_name, email, photo_url}}
 * */
-router.get("/:username", async (req, res, next) => {
+router.get("/:username", checkIfLoggedIn, async (req, res, next) => {
   try {
     const user = await User.get(req.params.username);
 

@@ -18,7 +18,7 @@ class User {
         (username, password, first_name, last_name,
         email, photo_url)
       VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING username, first_name, last_name, email, photo_url`,
+      RETURNING username, first_name, last_name, email, photo_url, is_admin`,
       [username, hashedPassword, first_name, last_name, email, photo_url]
     );
 
@@ -26,6 +26,10 @@ class User {
       throw new ExpressError("This user already exists.", 404);
     }
 
+    const { is_admin } = user.rows[0];
+    const payload = { username, is_admin };
+    user.rows[0]._token = jwt.sign(payload, SECRET_KEY )
+    
     return user.rows[0];
   }
 

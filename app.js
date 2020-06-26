@@ -6,12 +6,18 @@ const ExpressError = require("./helpers/expressError");
 
 const morgan = require("morgan");
 
+const { authenticateJWT } = require('./middleware/auth');
+
 const app = express();
 
 app.use(express.json());
 
 // add logging system
 app.use(morgan("tiny"));
+
+//middleware for each request
+
+app.use(authenticateJWT);
 
 // require routes
 const companyRoutes = require("./routes/companies");

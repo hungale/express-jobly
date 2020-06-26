@@ -14,7 +14,7 @@ beforeEach(async () => {
     "photo_url":"nope"
   });
   
- username = response.body.user.username;
+ username = 'abcdman';
 });
 
 afterEach(async () => {
@@ -37,9 +37,8 @@ describe('TESTING POST users', () => {
       "photo_url":"nope"
     });
 
-    expect(response.body.user).toHaveProperty('username');
-    expect(response.body.user.username).toEqual('abcman');
-    expect(response.body.user).not.toHaveProperty('password');
+    expect(response.body).toHaveProperty('token');
+   
     expect(response.statusCode).toEqual(201);
 
     // check the DB
