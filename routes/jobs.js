@@ -3,15 +3,16 @@ const Job = require("../models/job");
 const ExpressError = require('../expressError');
 const router = new express.Router();
 const jsonSchema = require('jsonschema');
-const jobSchemaPost = require("../schemas/jobSchemaPost.json")
+const jobSchemaPost = require("../schemas/jobSchemaPost.json");
 const jobSchemaPatch = require("../schemas/jobSchemaPatch.json");
+const { checkIfLoggedIn, checkIfAdmin} = require("../middleware/auth.js");
 
 /** POST / - add Job to db
 *
 * => {job: [{title, salary, equity, company_handle, date_posted}]}
 * */
 
-router.post("/", async (req, res, next) => {
+router.post("/", checkIfAdmin, async (req, res, next) => {
   const result = jsonSchema.validate(req.body, jobSchemaPost);
   
   try {
@@ -36,7 +37,7 @@ router.post("/", async (req, res, next) => {
 * => {job: [{id, title, salary, equity, company_handle, date_posted}, ...]}
 * */
 
-router.get('/', async (req, res, next) => {
+router.get('/', checkIfLoggedIn, async (req, res, next) => {
   try {
     const jobs = await Job.all(req.query);
     return res.json({ jobs });
@@ -50,7 +51,7 @@ router.get('/', async (req, res, next) => {
 * => {job: [{id, title, salary, equity, company_handle, date_posted}]}
 * */
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', checkIfLoggedIn, async (req, res, next) => {
   try {
     const { id } = req.params;
     const job = await Job.getBy(id);
@@ -66,17 +67,19 @@ router.get('/:id', async (req, res, next) => {
 * => {job: [{id, title, salary, equity, company_handle, date_posted}]}
 * */
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', checkIfAdmin, async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const job = await Job.update(id, req.body);
-
+    if(req.body.token) {
+      delete req.body.token;
+    }
     const result = jsonSchema.validate(req.body, jobSchemaPatch);
     if (!result.valid) {
       let listOfErrors = result.errors.map(error => error.stack);
       throw new ExpressError(listOfErrors, 400);
     }
-
+    
+    const { id } = req.params;
+    const job = await Job.update(id, req.body);
     return res.json({ job });
   } catch (err) {
     return next(err);
@@ -88,7 +91,7 @@ router.patch('/:id', async (req, res, next) => {
 * => {job: [{title}]}
 * */
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', checkIfAdmin, async (req, res, next) => {
   try {
     const { id } = req.params;
     const job = await Job.delete(id);

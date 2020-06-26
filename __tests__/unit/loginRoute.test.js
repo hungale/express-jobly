@@ -5,20 +5,20 @@ const db = require('../../db');
 
 let username;
 let password;
-let hashedPassword;
+let token;
 beforeEach(async () => {
   let response = await request(app).post('/users').send({
-    "username":"abcdman",
-    "password":"password",
-    "first_name":"abc", 
-    "last_name":"man",
-    "email":"noped",
-    "photo_url":"nope"
+    "username": "abcdman",
+    "password": "password",
+    "first_name": "abc",
+    "last_name": "man",
+    "email": "noped",
+    "photo_url": "nope"
   });
-  
- username = response.body.user.username;
- password = "password";
- hashedPassword = response.body.user.password;
+
+  username = "abcdman";
+  password = "password";
+  token = response.body.token;
 });
 
 afterEach(async () => {
@@ -33,8 +33,8 @@ afterAll(async () => {
 describe('TESTING login', () => {
   test('login successful', async () => {
     const response = await request(app).post('/login').send({
-      "username":"abcdman",
-      "password":"password",
+      "username": "abcdman",
+      "password": "password",
     });
 
     expect(response.statusCode).toEqual(200);
@@ -42,16 +42,16 @@ describe('TESTING login', () => {
   });
   test('login unsuccessful (invalid username)', async () => {
     const response = await request(app).post('/login').send({
-      "username":"abcman",
-      "password":"password",
+      "username": "abcman",
+      "password": "password",
     });
 
     expect(response.statusCode).toEqual(400);
   });
   test('login unsuccessful (invalid password)', async () => {
     const response = await request(app).post('/login').send({
-      "username":"abcdman",
-      "password":"g",
+      "username": "abcdman",
+      "password": "g",
     });
 
     expect(response.statusCode).toEqual(400);

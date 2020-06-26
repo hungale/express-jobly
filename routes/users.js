@@ -4,8 +4,9 @@ const ExpressError = require('../expressError');
 const router = new express.Router();
 const { checkIfLoggedIn } = require('../middleware/auth');
 const jsonSchema = require('jsonschema');
-const userSchemaPost = require("../schemas/userSchemaPost.json")
+const userSchemaPost = require("../schemas/userSchemaPost.json");
 const userSchemaPatch = require("../schemas/userSchemaPatch.json");
+const { checkIfCorrectUser } = require("../middleware/auth");
 
 /** POST / - add User to db
 *
@@ -68,7 +69,7 @@ router.get("/:username", checkIfLoggedIn, async (req, res, next) => {
 *
 * => {user: {username, first_name, last_name, email, photo_url}}
 * */
-router.patch("/:username", async (req, res, next) => {
+router.patch("/:username", checkIfCorrectUser, async (req, res, next) => {
   try {
     if ("username" in req.body || "password" in req.body || "email" in req.body) {
       return next({
@@ -77,6 +78,9 @@ router.patch("/:username", async (req, res, next) => {
       });
     }
     // don't let them change is_admin, if they aren't allowed to
+    if(req.body.token) {
+      delete req.body.token;
+    }
 
     const result = jsonSchema.validate(req.body, userSchemaPatch);
     if(!result.valid) {
@@ -96,7 +100,7 @@ router.patch("/:username", async (req, res, next) => {
 *
 * => { message: "User deleted" }
 * */
-router.delete("/:username", async (req, res, next) => {
+router.delete("/:username", checkIfCorrectUser, async (req, res, next) => {
   try {
     const user = await User.delete(req.params.username);
 

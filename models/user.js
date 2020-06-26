@@ -6,7 +6,6 @@ const { BCRYPT_WORKFACTOR, SECRET_KEY } = require('../config');
 const jwt = require('jsonwebtoken');
 
 /** User Class to add/get/update/delete user */
-
 class User {
   /** Create a new user */
   static async create({username, password, first_name, last_name, email, photo_url}) {
@@ -60,6 +59,10 @@ class User {
     const { query, values } = partialUpdate('users', updateValues, 
                                             'username', username);
     const user = await db.query(query, values);
+
+    if(!user.rows.length) {
+      throw new ExpressError("No matching user.", 404);
+    }
 
     // take out the password
     delete user.rows[0].password;

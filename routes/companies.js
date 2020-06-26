@@ -5,13 +5,14 @@ const router = new express.Router();
 const jsonSchema = require('jsonschema');
 const companySchema = require("../schemas/companySchema.json");
 const companySchemaUpdate = require("../schemas/companySchemaUpdate.json");
+const { checkIfLoggedIn, checkIfAdmin } = require("../middleware/auth.js");
 
 /** GET / - get list of handles and names for all company objects
  *
  * => {users: [{username, first_name, last_name, phone}, ...]}
  *
  **/
-router.get("/", async (req, res, next) =>  {
+router.get("/", checkIfLoggedIn, async (req, res, next) =>  {
   try {
     const companies = await Company.all(req.query);
     
@@ -26,7 +27,7 @@ router.get("/", async (req, res, next) =>  {
  * => {users: [{username, first_name, last_name, phone}, ...]}
  *
  **/
-router.post("/", async (req, res, next) => {
+router.post("/", checkIfAdmin,  async (req, res, next) => {
   try {
     const result = jsonSchema.validate(req.body, companySchema);
 
@@ -46,7 +47,7 @@ router.post("/", async (req, res, next) => {
  * => {users: [{username, first_name, last_name, phone}, ...]}
  *
  **/
-router.get('/:handle', async (req, res, next) => {
+router.get('/:handle', checkIfLoggedIn,  async (req, res, next) => {
   try {
     const { handle } = req.params;
     const company = await Company.getBy(handle);
@@ -62,8 +63,11 @@ router.get('/:handle', async (req, res, next) => {
  * => {users: [{username, first_name, last_name, phone}, ...]}
  *
  **/
-router.patch('/:handle', async (req, res, next) => {
+router.patch('/:handle', checkIfAdmin, async (req, res, next) => {
   try {
+    if(req.body.token) {
+      delete req.body.token;
+    }
     
     const result = jsonSchema.validate(req.body, companySchemaUpdate);
     if(!result.valid) {
@@ -85,7 +89,7 @@ router.patch('/:handle', async (req, res, next) => {
  * => {users: [{username, first_name, last_name, phone}, ...]}
  *
  **/
-router.delete('/:handle', async (req, res, next) => {
+router.delete('/:handle', checkIfAdmin, async (req, res, next) => {
   try {
     const { handle } = req.params;
 

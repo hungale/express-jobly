@@ -19,6 +19,6 @@ describe("partialUpdate()", () => {
       const key = "username";
       const id = "name";
       const response = sqlForPartialUpdate(table, items, key, id);
-      console.log("SQL PATCH return: ", response);
+      // console.log("SQL PATCH return: ", response);
   })
 });
